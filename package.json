@@ -5,28 +5,22 @@
   "license": "MIT",
   "scripts": {
     "build": "tsc --outdir . --target es5 -d --jsx react --esModuleInterop src/*",
-    "run-example-react": "parcel run examples/react/index.html",
-    "run-example-simple": "parcel run examples/simple/index.html"
+    "start": "parcel run examples/react/index.html"
   },
   "devDependencies": {
-    "@babel/polyfill": "^7.0.0",
-    "@types/lodash": "^4.14.118",
-    "@types/react": "^16.4.18",
-    "@types/react-dom": "^16.0.9",
-    "@vue/component-compiler-utils": "^2.3.0",
-    "comlinkjs": "^3.0.3",
-    "parcel-bundler": "^1.10.3",
-    "react": "^16.7.0-alpha.0",
-    "react-dom": "^16.7.0-alpha.0",
-    "redux": "^4.0.1",
-    "typescript": "^3.1.3",
-    "vue": "^2.5.17",
-    "vue-hot-reload-api": "^2.3.1",
-    "vue-template-compiler": "^2.5.17",
-    "vuex": "^3.0.1"
+    "@babel/polyfill": "7",
+    "@types/lodash": "4",
+    "@types/react": "16",
+    "@types/react-dom": "16",
+    "comlinkjs": "3",
+    "parcel-bundler": "1",
+    "react": "16",
+    "react-dom": "16",
+    "redux": "4",
+    "typescript": "3"
   },
   "dependencies": {
-    "lodash.isequal": "^4.5.0"
+    "lodash.isequal": "4"
   },
   "peerDependencies": {
     "@types/react": "*",

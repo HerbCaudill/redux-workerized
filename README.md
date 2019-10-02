@@ -95,7 +95,7 @@ yarn add -d @types/react @types/react-dom
 import "@babel/polyfill";
 import React, { useCallback } from "react";
 import ReactDOM from "react-dom";
-import { createWorkerContext } from "../../react";
+import { createWorkerContext } from "../../src/react";
 import { RootState } from "./reducer";
 
 // build worker

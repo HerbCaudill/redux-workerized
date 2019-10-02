@@ -1,54 +1,25 @@
-import { combineReducers, AnyAction, Reducer } from "redux";
+import { CounterAction, DECREMENT, INCREMENT } from './actions'
 
-// Counter
-
-type CounterState = {
-  value: number;
-};
-
-const INCREMENT = "counter/increment";
-
-export type Increment = {
-  type: typeof INCREMENT;
-};
-
-export function increment(): Increment {
-  return {
-    type: INCREMENT
-  };
+export type CounterState = {
+  value: number
 }
-
-type CounterAction = {
-  type: typeof INCREMENT;
-};
 
 const initialCounterState = {
   value: 0,
-  hiddenValue: 0
-};
+}
 
-function counter(
-  state: CounterState = initialCounterState,
-  action: CounterAction | AnyAction
-): CounterState {
+function reducer(state: CounterState = initialCounterState, action: CounterAction) {
   switch (action.type) {
-    case INCREMENT: {
-      return { ...state, value: state.value + 1 };
+    case DECREMENT: {
+      const { step } = action.payload
+      return { ...state, value: state.value - step }
     }
-    default: {
-      return state;
-    }
+    case INCREMENT:
+      const { step } = action.payload
+      return { ...state, value: state.value + step }
+    default:
+      return state
   }
 }
 
-// Root State
-
-export type RootState = {
-  counter: CounterState;
-};
-
-const rootReducer: Reducer<RootState, AnyAction> = combineReducers({
-  counter
-});
-
-export default rootReducer;
+export default reducer
