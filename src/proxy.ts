@@ -72,8 +72,8 @@ export const createProxyStore = <T extends unknown>(store: Store<T>): ProxyStore
  *   const proxyStore = createProxyStore(store)
  *   expose(proxyStore, self)
  *```
- * @param proxyStore
- * @param context
+ * @param proxyStore A proxy store created using `createProxyStore`
+ * @param context Typically `self` on a worker module
  */
 export const expose = <T>(proxyStore: ProxyStore<T>, context: Comlink.Endpoint | Window): void => {
   Comlink.expose({ ...proxyStore }, context)
