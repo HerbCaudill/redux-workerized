@@ -1,10 +1,11 @@
-﻿// Constants
+﻿import { AnyAction } from 'redux'
+
+// Constants
 
 export const INCREMENT = 'counter/increment'
 export const DECREMENT = 'counter/decrement'
 
-export interface CounterAction {
-  type: typeof INCREMENT | typeof DECREMENT
+export interface CounterAction extends AnyAction {
   payload: { step: number }
 }
 
