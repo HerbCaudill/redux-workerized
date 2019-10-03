@@ -1,21 +1,34 @@
 ﻿import React from 'react'
+import ReactCountdownClock from 'react-countdown-clock'
 import { useDispatch, useSelector } from '../src'
 import { actions } from './actions'
-import { CounterState } from './reducer'
+import { State } from './reducer'
 
 export function App() {
-  const valueSelector = (state: CounterState): number => state.value
-  const value = useSelector(valueSelector)
+  const value = useSelector((state: State): number => state.value)
+  const prime = useSelector((state: State): number => state.prime)
+
   const dispatch = useDispatch()
 
-  const increment = () => dispatch(actions.increment(3))
-  const decrement = () => dispatch(actions.decrement(2))
+  const increment = () => dispatch(actions.increment(1))
+  const decrement = () => dispatch(actions.decrement(1))
+  const nextPrime = () => dispatch(actions.nextPrime())
 
   return (
     <div>
-      <button onClick={decrement}>-2</button>
-      <label>{value}</label>
-      <button onClick={increment}>+3</button>
+      <ReactCountdownClock seconds={60} color="teal" size={150} />
+
+      <div style={{ display: 'none' }}>
+        <button onClick={decrement}>-</button>
+        <label>{value}</label>
+        <button onClick={increment}>+</button>
+      </div>
+      <div>
+        <p>
+          {prime}
+          <button onClick={nextPrime}>Next prime</button>
+        </p>
+      </div>
     </div>
   )
 }
