@@ -10,7 +10,7 @@ interface ProviderProps {
 }
 
 export async function getProvider(worker: Worker) {
-  return function Provider({ children, fallback = <div>Waiting...</div> }: ProviderProps) {
+  return function Provider({ children, fallback = <></> }: ProviderProps) {
     const [state, store] = useStore(worker)
 
     const provider = (
