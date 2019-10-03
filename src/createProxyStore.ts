@@ -1,15 +1,21 @@
-import { ProxyStore } from '.'
+import isEqual from 'lodash.isequal'
 import { AnyAction, Store } from 'redux'
 
-import isEqual from 'lodash.isequal'
-
-let _cnt = 0
-
-function uniqueId() {
-  return ++_cnt
+// A workerized store is just like a Redux store but with all async methods
+export type ProxyStore<State, A extends AnyAction = AnyAction> = {
+  getState(): Promise<State>
+  dispatch(action: A): Promise<void>
+  subscribe(
+    listener: (state: State) => void,
+    selector?: (root: State) => Promise<State> | State
+  ): Promise<number>
+  unsubscribe(listenerId: number): Promise<void>
 }
 
-export function createProxyStore<State>(store: Store<State>): ProxyStore<State> {
+let lastId = 0
+const uniqueId = () => ++lastId
+
+export const createProxyStore = <T extends unknown>(store: Store<T>): ProxyStore<T> => {
   const listenerMap = new Map<number, Function>()
   return {
     async subscribe(onChangeHandler: Function): Promise<number> {

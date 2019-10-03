@@ -1,7 +1,7 @@
 ﻿import React, { useContext } from 'react'
 import { CounterState } from './reducer'
 import { actions } from './actions'
-import { useSelector, useDispatch } from '../../src/react'
+import { useSelector, useDispatch } from '../../src/hooks'
 
 export function App() {
   const valueSelector = (state: CounterState): number => state.value
