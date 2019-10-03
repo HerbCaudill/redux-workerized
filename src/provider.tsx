@@ -6,7 +6,7 @@ export const StoreContext = React.createContext(null as any)
 
 interface ProviderProps {
   children: React.ReactNode
-  fallback: JSX.Element
+  fallback?: JSX.Element
 }
 
 export async function getProvider(worker: Worker) {

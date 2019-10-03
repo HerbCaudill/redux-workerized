@@ -1,8 +1,8 @@
 ﻿import * as Comlink from 'comlinkjs'
 import { useContext, useEffect, useState } from 'react'
 import { AnyAction, Dispatch } from 'redux'
-import { ProxyStore } from '.'
-import { StoreContext, StateContext } from './getProvider'
+import { ProxyStore } from './proxy'
+import { StoreContext, StateContext } from './provider'
 type Selector<T> = (state: T) => any
 
 export function useStore<T>(worker: Worker): [T, ProxyStore<T>] {

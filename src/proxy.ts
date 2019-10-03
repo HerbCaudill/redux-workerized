@@ -1,7 +1,7 @@
 import isEqual from 'lodash.isequal'
+import * as Comlink from 'comlinkjs'
 import { AnyAction, Store } from 'redux'
 
-// A workerized store is just like a Redux store but with all async methods
 export type ProxyStore<State, A extends AnyAction = AnyAction> = {
   getState(): Promise<State>
   dispatch(action: A): Promise<void>
@@ -15,6 +15,20 @@ export type ProxyStore<State, A extends AnyAction = AnyAction> = {
 let lastId = 0
 const uniqueId = () => ++lastId
 
+/**
+ * Since our store is running in a worker process, we provide our application with a proxy
+ * store that looks to it just like a garden-variety Redux store, except that everything is
+ * asynchronous, since all communication with the worker is based on handling message events.
+ *
+ * Once created, the proxy needs to be exposed using the `expose` function:
+ * ```js
+ *   import {expose, createProxyStore} from '...'
+ *   const store = createStore(reducer)
+ *   const proxyStore = createProxyStore(store)
+ *   expose(proxyStore, self)
+ *```
+ * @param store A regular Redux store created using `Redux.createStore`.
+ */
 export const createProxyStore = <T extends unknown>(store: Store<T>): ProxyStore<T> => {
   const listenerMap = new Map<number, Function>()
   return {
@@ -34,21 +48,33 @@ export const createProxyStore = <T extends unknown>(store: Store<T>): ProxyStore
 
     async unsubscribe(subscriptionId: number) {
       const listener = listenerMap.get(subscriptionId)
-      listener && listener()
+      if (listener) listener()
       listenerMap.delete(subscriptionId)
-    },
+    },b
 
     async getState() {
-      console.time('getState')
-      const state = await store.getState()
-      console.timeEnd('getState')
-      return state
+      return store.getState()
     },
 
     async dispatch(action: AnyAction) {
-      console.time('dispatch')
       store.dispatch(action)
-      console.timeEnd('dispatch')
     },
   }
+}
+
+/**
+ * Uses `Comlink` to expose a `proxyStore` as a worker.
+ *
+ * Example:
+ * ```js
+ *   import {expose, createProxyStore} from '...'
+ *   const store = createStore(reducer)
+ *   const proxyStore = createProxyStore(store)
+ *   expose(proxyStore, self)
+ *```
+ * @param proxyStore 
+ * @param context 
+ */
+export const expose = <T>(proxyStore: ProxyStore<T>, context: Comlink.Endpoint | Window): void => {
+  Comlink.expose({ ...proxyStore }, context)
 }

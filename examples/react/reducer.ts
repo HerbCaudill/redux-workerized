@@ -7,7 +7,6 @@ export type CounterState = {
 
 const initialCounterState = {
   value: 0,
-  // noise: makeNoise(10000),
 }
 
 function reducer(state: CounterState = initialCounterState, action: AnyAction) {

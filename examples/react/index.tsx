@@ -1,7 +1,7 @@
 import '@babel/polyfill'
 import React from 'react'
 import ReactDOM from 'react-dom'
-import { getProvider } from '../../src/getProvider'
+import { getProvider } from '../../src/provider'
 import { App } from './App'
 
 const start = async () => {
@@ -9,7 +9,7 @@ const start = async () => {
   const Provider = await getProvider(worker)
 
   ReactDOM.render(
-    <Provider fallback={<div>Loading...</div>}>
+    <Provider>
       <App />
     </Provider>,
     document.querySelector('.root')
