@@ -2,9 +2,9 @@ import '@babel/polyfill'
 import * as Comlink from 'comlinkjs'
 import { createStore } from 'redux'
 import reducer from './reducer'
-import { createWorkerizedStore } from '../../src/worker'
+import { createProxyStore } from '../../src/worker'
 
 const store = createStore(reducer)
-const storeAPI = createWorkerizedStore(store)
+const proxyStore = createProxyStore(store)
 
-Comlink.expose({ ...storeAPI }, self)
+Comlink.expose({ ...proxyStore }, self)

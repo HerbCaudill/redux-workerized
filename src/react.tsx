@@ -3,36 +3,45 @@ import * as Comlink from 'comlinkjs'
 import { Dispatch, AnyAction } from 'redux'
 import { ProxyStore } from '.'
 
+const StateContext = React.createContext<any>(null as any)
+const StoreContext = React.createContext(null as any)
 
-const waiting = <div>Waiting...</div>
+type Selector<T> = (state: T) => any
 
-export const createContext = async <State>(worker: Worker) => {
-  const SnapshotContext = React.createContext<State>(null as any)
-  const StoreContext = React.createContext(null as any)
+export function useSelector<State>(valueSelector: Selector<State>): any {
+  const state = useContext(StateContext)
+  return valueSelector(state)
+}
+
+export function useDispatch<A extends AnyAction>(): Dispatch<A> {
+  const proxy = useContext(StoreContext)
+  return proxy.dispatch
+}
+
+export async function getProvider<State>(worker: Worker) {
   const store: ProxyStore<State> = Comlink.proxy(worker) as any
 
-  const currentState = await store.getState()
-  let currentSnapshot: State = currentState
+  let currentState = await store.getState()
 
   function useStore(): [State, ProxyStore<State>] {
-    const [state, setState] = useState<State>(currentSnapshot)
-    currentSnapshot = state
+    const [state, setState] = useState<State>(currentState)
+    currentState = state
 
     // subscribe to remote state
     useEffect(() => {
       const subscriptionIdPromise = store.subscribe(
-        Comlink.proxyValue((state: State) => {
-          currentSnapshot = state
-          setState(state)
-        }),
-        Comlink.proxyValue(selector as any)
+        Comlink.proxyValue((s: State) => {
+          currentState = s
+          setState(s)
+        })
       )
 
-      currentSnapshot == null
-      store.getState().then(async (state: State) => {
-        currentSnapshot = await selector(state)
-        setState(currentSnapshot)
+      currentState == null
+      store.getState().then(async (s: State) => {
+        currentState = s
+        setState(s)
       })
+
       return async () => {
         const subscriptionId: number = await subscriptionIdPromise
         store.unsubscribe(subscriptionId)
@@ -42,34 +51,21 @@ export const createContext = async <State>(worker: Worker) => {
     return [state, store]
   }
 
+  const waiting = <div>Waiting...</div>
+
   interface WorkerContextProps {
     children: React.ReactNode
     fallback: JSX.Element
   }
-  function Provider({ children, fallback = waiting }: WorkerContextProps) {
-    const [State, store] = useStore()
-    return State ? (
+  return function Provider({ children, fallback = waiting }: WorkerContextProps) {
+    const [state, store] = useStore()
+
+    return state ? (
       <StoreContext.Provider value={store}>
-        <SnapshotContext.Provider value={State}>{children}</SnapshotContext.Provider>
+        <StateContext.Provider value={state}>{children}</StateContext.Provider>
       </StoreContext.Provider>
     ) : (
       fallback
     )
-  }
-
-  function useSnapshot(valueSelector: (State: State) => any): any {
-    const State = useContext(SnapshotContext)
-    return valueSelector(State)
-  }
-
-  function useDispatch<A extends AnyAction>(): Dispatch<A> {
-    const proxy = useContext(StoreContext)
-    return proxy.dispatch
-  }
-
-  return {
-    Provider,
-    useSnapshot,
-    useDispatch,
   }
 }

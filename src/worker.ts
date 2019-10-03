@@ -9,22 +9,14 @@ function uniqueId() {
   return ++_cnt
 }
 
-function defaultSelector<State>(state: State) {
-  return state
-}
-
-export function createWorkerizedStore<State>(store: Store<State>): ProxyStore<State> {
+export function createProxyStore<State>(store: Store<State>): ProxyStore<State> {
   const listenerMap = new Map<number, Function>()
   return {
-    async subscribe<Snapshot = State>(
-      onChangeHandler: Function,
-      selector: (state: State) => Snapshot = defaultSelector as any
-    ): Promise<number> {
-      const getSnapshot: () => Promise<Snapshot> = () => selector(store.getState()) as any
+    async subscribe(onChangeHandler: Function): Promise<number> {
       const subscriptionId = uniqueId()
-      let lastSnapshot = await getSnapshot()
+      let lastSnapshot = store.getState()
       const unsubscribe = store.subscribe(async () => {
-        const newSnapshot = await getSnapshot()
+        const newSnapshot = store.getState()
         if (!isEqual(lastSnapshot, newSnapshot)) {
           onChangeHandler(newSnapshot)
           lastSnapshot = newSnapshot
@@ -33,16 +25,24 @@ export function createWorkerizedStore<State>(store: Store<State>): ProxyStore<St
       listenerMap.set(subscriptionId, unsubscribe)
       return subscriptionId
     },
+
     async unsubscribe(subscriptionId: number) {
       const listener = listenerMap.get(subscriptionId)
       listener && listener()
       listenerMap.delete(subscriptionId)
     },
+
     async getState() {
-      return store.getState()
+      console.time('getState')
+      const state = await store.getState()
+      console.timeEnd('getState')
+      return state
     },
+
     async dispatch(action: AnyAction) {
+      console.time('dispatch')
       store.dispatch(action)
+      console.timeEnd('dispatch')
     },
   }
 }

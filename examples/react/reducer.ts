@@ -1,3 +1,5 @@
+import { AnyAction } from 'redux'
+import { DECREMENT, INCREMENT } from './actions'
 import uuid from 'uuid'
 import faker from 'faker'
 
@@ -33,7 +35,7 @@ const initialCounterState = {
   noise: makeNoise(10000),
 }
 
-function reducer(state: CounterState = initialCounterState, action: CounterAction) {
+function reducer(state: CounterState = initialCounterState, action: AnyAction) {
   switch (action.type) {
     case DECREMENT: {
       const { step } = action.payload
