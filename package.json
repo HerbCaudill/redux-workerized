@@ -5,7 +5,7 @@
   "license": "MIT",
   "scripts": {
     "build": "tsc --outdir . --target es5 -d --jsx react --esModuleInterop src/*",
-    "start": "parcel run examples/react/index.html"
+    "start": "parcel run demo/index.html"
   },
   "devDependencies": {
     "@babel/polyfill": "7",
@@ -25,11 +25,7 @@
     "uuid": "3"
   },
   "peerDependencies": {
-    "@types/react": "*",
-    "@types/react-dom": "*",
-    "comlinkjs": "*",
     "react": "*",
-    "react-dom": "*",
     "redux": "*"
   },
   "files": [

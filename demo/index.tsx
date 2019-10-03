@@ -1,7 +1,7 @@
 import '@babel/polyfill'
 import React from 'react'
 import ReactDOM from 'react-dom'
-import { getProvider } from '../../src/provider'
+import { getProvider } from '../src'
 import { App } from './App'
 
 const start = async () => {

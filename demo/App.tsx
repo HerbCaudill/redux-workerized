@@ -1,5 +1,5 @@
 ﻿import React from 'react'
-import { useDispatch, useSelector } from '../../src'
+import { useDispatch, useSelector } from '../src'
 import { actions } from './actions'
 import { CounterState } from './reducer'
 
