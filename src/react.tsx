@@ -50,13 +50,11 @@ export async function getProvider<State>(worker: Worker) {
     return [state, store]
   }
 
-  const waiting = <div>Waiting...</div>
-
   interface WorkerContextProps {
     children: React.ReactNode
     fallback: JSX.Element
   }
-  return function Provider({ children, fallback = waiting }: WorkerContextProps) {
+  return function Provider({ children, fallback = <div>Waiting...</div> }: WorkerContextProps) {
     const [state, store] = useStore()
 
     return state ? (
