@@ -50,7 +50,7 @@ export const createProxyStore = <T extends unknown>(store: Store<T>): ProxyStore
       const listener = listenerMap.get(subscriptionId)
       if (listener) listener()
       listenerMap.delete(subscriptionId)
-    },b
+    },
 
     async getState() {
       return store.getState()
@@ -72,8 +72,8 @@ export const createProxyStore = <T extends unknown>(store: Store<T>): ProxyStore
  *   const proxyStore = createProxyStore(store)
  *   expose(proxyStore, self)
  *```
- * @param proxyStore 
- * @param context 
+ * @param proxyStore
+ * @param context
  */
 export const expose = <T>(proxyStore: ProxyStore<T>, context: Comlink.Endpoint | Window): void => {
   Comlink.expose({ ...proxyStore }, context)
