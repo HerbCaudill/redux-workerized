@@ -25,9 +25,8 @@ export async function getProvider<State>(worker: Worker) {
 
   function useStore(): [State, ProxyStore<State>] {
     const [state, setState] = useState<State>(currentState)
-    currentState = state
 
-    // subscribe to remote state
+    // subscribe to state in worker
     useEffect(() => {
       const subscriptionIdPromise = store.subscribe(
         Comlink.proxyValue((s: State) => {
