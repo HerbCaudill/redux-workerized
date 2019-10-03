@@ -8,61 +8,41 @@ const StoreContext = React.createContext(null as any)
 
 type Selector<T> = (state: T) => any
 
-export function useSelector<State>(valueSelector: Selector<State>): any {
+interface ProviderProps {
+  children: React.ReactNode
+  fallback: JSX.Element
+}
+
+export async function getProvider(worker: Worker) {
+  return function Provider({ children, fallback = <div>Waiting...</div> }: ProviderProps) {
+    const [state, store] = useStore(worker)
+
+    const provider = (
+      <StoreContext.Provider value={store}>
+        <StateContext.Provider value={state}>{children}</StateContext.Provider>
+      </StoreContext.Provider>
+    )
+
+    return state ? provider : fallback
+  }
+}
+
+function useStore<T>(worker: Worker): [T, ProxyStore<T>] {
+  const [state, setState] = useState<T>(null)
+  const proxyStore: ProxyStore<T> = Comlink.proxy(worker) as any
+
+  // get current state then subscribe to it
+  useEffect(() => {
+    proxyStore.getState().then(async (s: T) => setState(s))
+    proxyStore.subscribe(Comlink.proxyValue((s: T) => setState(s)))
+  }, []) // only on first render
+
+  return [state, proxyStore]
+}
+
+export const useSelector = <T extends unknown>(valueSelector: Selector<T>): any => {
   const state = useContext(StateContext)
   return valueSelector(state)
 }
 
-export function useDispatch<A extends AnyAction>(): Dispatch<A> {
-  const proxy = useContext(StoreContext)
-  return proxy.dispatch
-}
-
-export async function getProvider<State>(worker: Worker) {
-  const store: ProxyStore<State> = Comlink.proxy(worker) as any
-
-  let currentState = await store.getState()
-
-  function useStore(): [State, ProxyStore<State>] {
-    const [state, setState] = useState<State>(currentState)
-
-    // subscribe to state in worker
-    useEffect(() => {
-      const subscriptionIdPromise = store.subscribe(
-        Comlink.proxyValue((s: State) => {
-          currentState = s
-          setState(s)
-        })
-      )
-
-      currentState == null
-      store.getState().then(async (s: State) => {
-        currentState = s
-        setState(s)
-      })
-
-      return async () => {
-        const subscriptionId: number = await subscriptionIdPromise
-        store.unsubscribe(subscriptionId)
-      }
-    }, [])
-
-    return [state, store]
-  }
-
-  interface WorkerContextProps {
-    children: React.ReactNode
-    fallback: JSX.Element
-  }
-  return function Provider({ children, fallback = <div>Waiting...</div> }: WorkerContextProps) {
-    const [state, store] = useStore()
-
-    return state ? (
-      <StoreContext.Provider value={store}>
-        <StateContext.Provider value={state}>{children}</StateContext.Provider>
-      </StoreContext.Provider>
-    ) : (
-      fallback
-    )
-  }
-}
+export const useDispatch = <A extends AnyAction>(): Dispatch<A> => useContext(StoreContext).dispatch
