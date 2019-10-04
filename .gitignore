@@ -3,5 +3,5 @@ logs
 node_modules
 .env
 dist
-.vscode
 .cache
+.vscode
