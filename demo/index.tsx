@@ -23,10 +23,8 @@ const start = async () => {
   ReactDOM.render(
     <div>
       <Clock></Clock>
-      <p>
-        Use the buttons to find a few large prime numbers. Without a worker, notice how the
-        animation above freezes during each calculation.
-      </p>
+      <p>Use the buttons to find a few large prime numbers.</p>
+      <p>Without a worker, notice how the animation stops updating smoothly.</p>
       <div style={{ display: 'flex' }}>
         <ProxyProvider>
           <WithWorker />

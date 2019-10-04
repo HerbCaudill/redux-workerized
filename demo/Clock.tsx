@@ -15,7 +15,7 @@ export const Clock = () => {
   return (
     <ReactCountdownClock
       seconds={seconds}
-      color="008080"
+      color="#008080"
       timeFormat="seconds"
       weight={20}
       size={200}

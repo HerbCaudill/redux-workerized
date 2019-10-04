@@ -16,15 +16,31 @@ export const Calculate = ({ state, dispatch }: { state: State; dispatch: Dispatc
     }
     dispatch(actions.setBusy(false))
   }
-
+  const style = {
+    button: {
+      border: '2px solid',
+      margin: '10px 0',
+      padding: '10px 30px',
+      borderRadius: '10px',
+      cursor: 'pointer',
+      outline: 'none',
+      minWidth: '10em',
+      ...(state.busy
+        ? {
+            background: '#008080bb',
+            borderColor: '#008080',
+            color: 'white',
+          }
+        : {
+            background: '#00808022',
+            borderColor: '#008080',
+            color: '#008080',
+          }),
+    },
+  }
   return (
     <div style={{ width: '12em' }}>
-      <button
-        onClick={calculate}
-        style={
-          state.busy ? { background: '#008080bb', borderColor: '#008080', color: 'white' } : {}
-        }
-      >
+      <button onClick={calculate} style={style.button}>
         {state.busy ? 'Calculating...' : 'Calculate'}
       </button>
       {state.primes.map(p => (
