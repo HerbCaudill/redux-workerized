@@ -27,12 +27,14 @@ const start = async () => {
         Use the buttons to find a few large prime numbers. Without a worker, notice how the
         animation above freezes during each calculation.
       </p>
-      <ProxyProvider>
-        <WithWorker />
-      </ProxyProvider>
-      <RegularProvider>
-        <WithoutWorker />
-      </RegularProvider>
+      <div style={{ display: 'flex' }}>
+        <ProxyProvider>
+          <WithWorker />
+        </ProxyProvider>
+        <RegularProvider>
+          <WithoutWorker />
+        </RegularProvider>
+      </div>
     </div>,
     document.querySelector('.root')
   )
