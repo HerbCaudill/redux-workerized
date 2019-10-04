@@ -9,8 +9,10 @@ interface ProviderProps {
   fallback?: JSX.Element
 }
 
+const empty = <></>
+
 export async function getProvider(worker: Worker) {
-  return function Provider({ children, fallback = <></> }: ProviderProps) {
+  return function Provider({ children, fallback = empty }: ProviderProps) {
     const [state, store] = useStore(worker)
 
     const provider = (
