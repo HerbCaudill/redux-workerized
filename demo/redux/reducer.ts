@@ -4,20 +4,24 @@ import { nextPrime } from '../lib/primes'
 
 export type State = {
   prime: number
+  primes: number[]
   busy: boolean
 }
 
 const initialState = {
   prime: 861504408610801,
+  primes: [],
   busy: false,
 }
 
 function reducer(state: State = initialState, action: AnyAction) {
   switch (action.type) {
     case NEXT_PRIME: {
+      const next = nextPrime(state.prime)
       return {
         ...state,
-        prime: nextPrime(state.prime),
+        prime: next,
+        primes: [...state.primes, next],
       }
     }
     case SET_BUSY: {
