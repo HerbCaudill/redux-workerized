@@ -18,9 +18,18 @@ export const Calculate = ({ state, dispatch }: { state: State; dispatch: Dispatc
   }
 
   return (
-    <p>
-      <button onClick={calculate}>{state.busy ? 'Calculating...' : 'Calculate'}</button>
-      {state.prime}
-    </p>
+    <div style={{ width: '12em' }}>
+      <button
+        onClick={calculate}
+        style={
+          state.busy ? { background: '#008080bb', borderColor: '#008080', color: 'white' } : {}
+        }
+      >
+        {state.busy ? 'Calculating...' : 'Calculate'}
+      </button>
+      {state.primes.map(p => (
+        <div key={p}>{p}</div>
+      ))}
+    </div>
   )
 }
